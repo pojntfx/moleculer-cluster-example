@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta6
+kind: Config
+metadata:
+  name: moleculer-hello-world
+build:
+  artifacts:
+    - image: docker.io/pojntfx/moleculer-cluster-example
+deploy:
+  kubectl:
+    manifests:
+      - stack.yaml
+profiles:
+  - name: dev
+    activation:
+      - command: dev
+    build:
+      artifacts:
+        - image: docker.io/pojntfx/moleculer-cluster-example
+          docker:
+            dockerfile: Dockerfile.dev
+          sync:
+            infer:
+              - "**/*"
