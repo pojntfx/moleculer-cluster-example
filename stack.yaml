@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moleculer-cluster-example
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: moleculer-cluster-example
+  template:
+    metadata:
+      labels:
+        app: moleculer-cluster-example
+    spec:
+      containers:
+        - name: moleculer-cluster-example
+          image: docker.io/pojntfx/moleculer-cluster-example:latest
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moleculer-cluster-example
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: http
+  selector:
+    app: moleculer-cluster-example
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: moleculer-cluster-example
+spec:
+  rules:
+    - host: moleculer-cluster-example.felicitas.pojtinger.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: moleculer-cluster-example
+              servicePort: http
